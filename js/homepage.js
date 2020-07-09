@@ -1,4 +1,8 @@
 const url = 'https://ron-swanson-quotes.herokuapp.com/v2/quotes';
+let randomlyCreated = false;
+let cardContainer = document.getElementById('card-container');
+let cardContainerQuote = document.getElementById('card-container-quote');
+
 let getSingleQuoteButton = document.getElementById("getSingleQuote");
 getSingleQuoteButton.addEventListener('click', () => {
     getSingleQuote();
@@ -15,37 +19,39 @@ getTermQuote.addEventListener('click', () => {
 });
 
 function getSingleQuote() {
-    // 1. Create a new XMLHttpRequest object
+
+    randomlyCreated = true;
     let xhr = new XMLHttpRequest();
-    let responses = [];
-    // 2. Configure it: GET-request for the URL /article/.../load
+    let response;
     xhr.open('GET', url);
 
-    // 3. Send the request over the network
     xhr.send();
 
-    // 4. This will be called after the response is received
     xhr.onload = function() {
-    if (xhr.status != 200) { // analyze HTTP status of the response
-        alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
-    } else { // show the result
-        alert(`Done, got ${xhr.response.length} bytes (This means we finshed fetching the response, yei)`); // response is the server
-        responses= JSON.parse(xhr.response);
-        console.log(responses);
-    }
+        if (xhr.status != 200) { 
+            alert(`Error ${xhr.status}: ${xhr.statusText}`);
+        } else { 
+            alert(`Done, got ${xhr.response.length} bytes (This means we finshed fetching the response, yei)`); // response is the server
+            response= JSON.parse(xhr.response);
+            if(cardContainer.children.length > 0) {
+                updateCard(cardContainer, response);
+            } else {
+                createTaskCard(cardContainer, response,randomlyCreated)
+            }
+        }
     };
 
     xhr.onprogress = function(event) {
-    if (event.lengthComputable) {
-        alert(`Received ${event.loaded} of ${event.total} bytes ( this means we got the total size of the response; this means yei)`);
-    } else {
-        alert(`Received ${event.loaded} bytes`); // no Content-Length
-    }
+        if (event.lengthComputable) {
+            alert(`Received ${event.loaded} of ${event.total} bytes ( this means we got the total size of the response; this means yei)`);
+        } else {
+            alert(`Received ${event.loaded} bytes`);
+        }
 
     };
 
     xhr.onerror = function() {
-    alert("Request failed");
+        alert("Request failed");
     };
 }
 
@@ -54,20 +60,16 @@ function getManyQuotes() {
     let responses;
     let inputNumber = 63; // MAXIMUM VALUE IS 63 quotes
     let changeableUrl = `${url}/${inputNumber}`;
-    // 1. Create a new XMLHttpRequest object
     let xhr = new XMLHttpRequest();
 
-    // 2. Configure it: GET-request for the URL /article/.../load
     xhr.open('GET', changeableUrl);
 
-    // 3. Send the request over the network
     xhr.send();
 
-    // 4. This will be called after the response is received
     xhr.onload = function() {
-    if (xhr.status != 200) { // analyze HTTP status of the response
-        alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
-    } else { // show the result
+    if (xhr.status != 200) { 
+        alert(`Error ${xhr.status}: ${xhr.statusText}`); 
+    } else { 
         alert(`Done, got ${xhr.response.length} bytes (This means we finshed fetching the response, yei)`); // response is the server
         responses= JSON.parse(xhr.response);
         }
@@ -77,7 +79,7 @@ function getManyQuotes() {
     if (event.lengthComputable) {
         alert(`Received ${event.loaded} of ${event.total} bytes ( this means we got the total size of the response; this means yei)`);
     } else {
-        alert(`Received ${event.loaded} bytes`); // no Content-Length
+        alert(`Received ${event.loaded} bytes`); 
     }
 
     };
@@ -89,40 +91,79 @@ function getManyQuotes() {
 
 function getTermQuotes() {
 
+    let inputQuote = prompt("Enter a word");
     let responses;
-    let quote = 'ass'; 
-    let changeableUrl = `${url}/search/${quote}`;
-    // 1. Create a new XMLHttpRequest object
+    let changeableUrl = `${url}/search/${inputQuote}`;
+    
     let xhr = new XMLHttpRequest();
 
-    // 2. Configure it: GET-request for the URL /article/.../load
     xhr.open('GET', changeableUrl);
 
-    // 3. Send the request over the network
     xhr.send();
 
-    // 4. This will be called after the response is received
     xhr.onload = function() {
-    if (xhr.status != 200) { // analyze HTTP status of the response
-        alert(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
-    } else { // show the result
-        alert(`Done, got ${xhr.response.length} bytes (This means we finshed fetching the response, yei)`); // response is the server
-        responses= JSON.parse(xhr.response);
-        console.log(responses);
+        if (xhr.status != 200) { 
+            alert(`Error ${xhr.status}: ${xhr.statusText}`); 
+        } else { 
+            alert(`Done, got ${xhr.response.length} bytes (This means we finshed fetching the response, yei)`); // response is the server
+            responses= JSON.parse(xhr.response);
+            for ( let response in responses) {
+                createTaskCard(cardContainerQuote,responses[response], randomlyCreated);
+            }
+
         }
     };
 
     xhr.onprogress = function(event) {
-    if (event.lengthComputable) {
-        alert(`Received ${event.loaded} of ${event.total} bytes ( this means we got the total size of the response; this means yei)`);
-    } else {
-        alert(`Received ${event.loaded} bytes`); // no Content-Length
-    }
+        if (event.lengthComputable) {
+            alert(`Received ${event.loaded} of ${event.total} bytes ( this means we got the total size of the response; this means yei)`);
+        } else {
+            alert(`Received ${event.loaded} bytes`);
+        }
 
     };
 
     xhr.onerror = function() {
-    alert("Request failed");
+        alert("Request failed");
     };
 }
 
+function createTaskCard(cardContainer, quote, randomlyCreated) {
+
+    let card = document.createElement('div');
+
+    if (randomlyCreated == true) {
+        card.className = 'card border-primary mb-3';
+        card.style = 'margin-top: 10px;'
+    } else {
+        card.className = 'card border-light mb-3';
+        card.style = 'margin-top: 10px;'
+    }
+   
+    let cardHeader = document.createElement('div');
+    cardHeader.className = "card-header";
+    cardHeader.textContent = "Header"
+
+    let cardBody = document.createElement('div');
+    cardBody.className = 'card-body';
+
+    let title = document.createElement('h5');
+    title.textContent = 'Ron Swanson says';
+    title.className = 'card-title';
+
+    let color = document.createElement('p');
+    color.textContent = quote;
+    color.className = 'card-text';
+
+
+    cardBody.appendChild(title);
+    cardBody.appendChild(color);
+    card.appendChild(cardHeader);
+    card.appendChild(cardBody);
+    cardContainer.appendChild(card);
+}
+
+function updateCard(cardContainer, quote) {
+
+    cardContainer.childNodes[0].childNodes[1].childNodes[1].textContent = quote;
+}
