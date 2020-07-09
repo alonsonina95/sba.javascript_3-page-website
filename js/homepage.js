@@ -70,7 +70,7 @@ function getManyQuotes() {
     if (xhr.status != 200) { 
         alert(`Error ${xhr.status}: ${xhr.statusText}`); 
     } else { 
-        alert(`Done, got ${xhr.response.length} bytes (This means we finshed fetching the response, yei)`); // response is the server
+        alert(`Done, got ${xhr.response.length} bytes (This means we finshed fetching the response, yei)`);
         responses= JSON.parse(xhr.response);
         }
     };
