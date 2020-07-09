@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+body {
+    background-color: #C5CAE9;
+}
+
+#homepageText {
+    font-family: 'Bangers', cursive;
+}
