@@ -8,11 +8,6 @@ getSingleQuoteButton.addEventListener('click', () => {
     getSingleQuote();
 });
 
-let getManyQuoteButton = document.getElementById("getManyQuotes");
-getManyQuoteButton.addEventListener('click', () => {
-    getManyQuotes();
-});
-
 let getTermQuote = document.getElementById("getTermQuote");
 getTermQuote.addEventListener('click', () => {
     getTermQuotes();
@@ -52,40 +47,6 @@ function getSingleQuote() {
 
     xhr.onerror = function() {
         alert("Request failed");
-    };
-}
-
-function getManyQuotes() {
-
-    let responses;
-    let inputNumber = 63; // MAXIMUM VALUE IS 63 quotes
-    let changeableUrl = `${url}/${inputNumber}`;
-    let xhr = new XMLHttpRequest();
-
-    xhr.open('GET', changeableUrl);
-
-    xhr.send();
-
-    xhr.onload = function() {
-    if (xhr.status != 200) { 
-        alert(`Error ${xhr.status}: ${xhr.statusText}`); 
-    } else { 
-        alert(`Done, got ${xhr.response.length} bytes (This means we finshed fetching the response, yei)`);
-        responses= JSON.parse(xhr.response);
-        }
-    };
-
-    xhr.onprogress = function(event) {
-    if (event.lengthComputable) {
-        alert(`Received ${event.loaded} of ${event.total} bytes ( this means we got the total size of the response; this means yei)`);
-    } else {
-        alert(`Received ${event.loaded} bytes`); 
-    }
-
-    };
-
-    xhr.onerror = function() {
-    alert("Request failed");
     };
 }
 
@@ -142,13 +103,12 @@ function createTaskCard(cardContainer, quote, randomlyCreated) {
    
     let cardHeader = document.createElement('div');
     cardHeader.className = "card-header";
-    cardHeader.textContent = "Header"
+    cardHeader.textContent = "Ron Swanson says"
 
     let cardBody = document.createElement('div');
     cardBody.className = 'card-body';
 
     let title = document.createElement('h5');
-    title.textContent = 'Ron Swanson says';
     title.className = 'card-title';
 
     let color = document.createElement('p');
